@@ -1,12 +1,10 @@
 import loc from '../../support/locators'
 
 describe('Should test at a functional level', () => {
-    beforeEach(() => {
-        cy.visit('https://barrigareact.wcaquino.me/')
-        cy.get(loc.LOGIN.USER).type('andrefmorais@live.com')
-        cy.get(loc.LOGIN.PASSWORD).type('153941')
-        cy.get(loc.LOGIN.BTN_LOGIN).click()
-        cy.get(loc.MESSAGE).should('contain', 'Bem vindo')
+
+    before(() => {
+        cy.login('andrefmorais@live.com', '153941')
+        cy.resetApp()
     })
 
     it('Should creat an account', () => {
@@ -18,6 +16,7 @@ describe('Should test at a functional level', () => {
     })
 
     it('Should update an account', () => {
+        cy.login('andrefmorais@live.com', '153941')
         cy.get(loc.MENU.SETTINGS).click()
         cy.get(loc.MENU.CONTAS).click()
         cy.xpath(loc.CONTAS.XP_BTN_ALETRAR).click()
