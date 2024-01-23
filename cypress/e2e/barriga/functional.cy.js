@@ -45,12 +45,19 @@ describe('Should test at a functional level', () => {
         cy.get(loc.MESSAGE).should('contain', 'sucesso')
 
         cy.get(loc.EXTRATO.LINHAS).should('have.length', 7)
-        cy.xpath(loc.EXTRATO.FN_XP_BUSCA_ELEMENTO('Desc','123')).should('exist')
+        cy.xpath(loc.EXTRATO.FN_XP_BUSCA_ELEMENTO('Desc', '123')).should('exist')
     })
 
     it('Should get balance', () => {
         cy.login('andrefmorais@live.com', '153941')
         cy.get(loc.MENU.HOME).click()
         cy.xpath(loc.SALDO.FN_XP_SALDO_CONTA('Conta alterada')).should('contain', '123,00')
+    })
+
+    it('Should remove a transaction', () => {
+        cy.login('andrefmorais@live.com', '153941')
+        cy.get(loc.MENU.EXTRATO).click()
+        cy.xpath(loc.EXTRATO.FN_XP_REMOVER_ELEMENTO('Desc')).click()
+        cy.get(loc.MESSAGE).should('contain', 'sucesso')
     })
 })
