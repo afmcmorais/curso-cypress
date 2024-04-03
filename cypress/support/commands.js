@@ -45,3 +45,26 @@ Cypress.Commands.add('resetApp', () => {
     cy.get(loc.MENU.SETTINGS).click()
     cy.get(loc.MENU.RESET).click()
 })
+
+Cypress.Commands.add('getToken', (user, passwd) => {
+    cy.api({
+        method: 'POST',
+        url: '/signin',
+        body: {
+            email: user,
+            redirecionar: false,
+            senha: passwd
+        }
+    }).its('body.token').should('not.be.empty')
+        .then(token => {
+            return token
+        })
+})
+
+Cypress.Commands.add('resetRest', (user, passwd, token) => {
+    cy.api({
+        method: 'GET',
+        url: '/reset',
+        headers: { Authorization: `JWT ${token}` }
+    }).its('status').should('be.equal', 200)
+})
