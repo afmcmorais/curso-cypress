@@ -1,4 +1,5 @@
 describe('Should test at a functional level', () => {
+    const dayjs = require('dayjs')
     let token
 
     before(() => {
@@ -65,8 +66,6 @@ describe('Should test at a functional level', () => {
     })
 
     it('Should create a transaction', () => {
-        const dayjs = require('dayjs')
-
         cy.getContaByName('andrefmorais@live.com', '153941', token, 'Conta para movimentacoes')
             .then(contaId => {
                 cy.api({
@@ -90,7 +89,51 @@ describe('Should test at a functional level', () => {
     })
 
     it('Should get balance', () => {
+        cy.api({
+            method: 'GET',
+            headers: { Authorization: `JWT ${token}` },
+            url: '/saldo',
+        }).then(res => {
+            let saldoConta = null
+            res.body.forEach(c => {
+                if (c.conta === 'Conta para saldo') saldoConta = c.saldo
+            })
+            expect(saldoConta).to.be.equal('534.00')
+        })
 
+        cy.api({
+            method: 'GET',
+            headers: { Authorization: `JWT ${token}` },
+            url: '/transacoes',
+            qs: { descricao: 'Movimentacao 1, calculo saldo' }
+        }).then(res => {
+            cy.api({
+                method: 'PUT',
+                headers: { Authorization: `JWT ${token}` },
+                url: `/transacoes/${res.body[0].id}`,
+                body: {
+                    status: true,
+                    data_pagamento: dayjs(res.body[0].data_pagamento).format('DD/MM/YYYY'),
+                    data_transacao: dayjs(res.body[0].data_transacao).format('DD/MM/YYYY'),
+                    descricao: res.body[0].descricao,
+                    envolvido: res.body[0].envolvido,
+                    valor: res.body[0].valor,
+                    conta_id: res.body[0].conta_id
+                }
+            }).its('status').should('be.equal', 200)
+        })
+
+        cy.api({
+            method: 'GET',
+            headers: { Authorization: `JWT ${token}` },
+            url: '/saldo',
+        }).then(res => {
+            let saldoConta = null
+            res.body.forEach(c => {
+                if (c.conta === 'Conta para saldo') saldoConta = c.saldo
+            })
+            expect(saldoConta).to.be.equal('4034.00')
+        })
     })
 
     it('Should remove a transaction', () => {
