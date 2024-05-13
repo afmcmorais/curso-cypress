@@ -68,3 +68,16 @@ Cypress.Commands.add('resetRest', (user, passwd, token) => {
         headers: { Authorization: `JWT ${token}` }
     }).its('status').should('be.equal', 200)
 })
+
+Cypress.Commands.add('getContaByName', (user, passwd, token, name) => {
+    cy.api({
+        method: 'GET',
+        url: '/contas',
+        headers: { Authorization: `JWT ${token}` },
+        qs: {
+            nome: name
+        }
+    }).then(res => {
+        return res.body[0].id
+    })
+})

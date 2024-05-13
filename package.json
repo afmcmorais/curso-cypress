@@ -11,11 +11,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "^13.7.2",
+    "cypress": "^13.9.0",
     "cypress-xpath": "^2.0.1",
     "install": "^0.13.0"
   },
   "dependencies": {
-    "cypress-plugin-api": "^2.11.1"
+    "cypress-plugin-api": "^2.11.1",
+    "dayjs": "^1.11.11"
   }
 }
