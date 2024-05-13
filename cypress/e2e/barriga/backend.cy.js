@@ -137,7 +137,18 @@ describe('Should test at a functional level', () => {
     })
 
     it('Should remove a transaction', () => {
-
+        cy.api({
+            method: 'GET',
+            headers: { Authorization: `JWT ${token}` },
+            url: '/transacoes',
+            qs: { descricao: 'Movimentacao para exclusao' }
+        }).then(res => {
+            cy.api({
+                method: 'DELETE',
+                headers: { Authorization: `JWT ${token}` },
+                url: `/transacoes/${res.body[0].id}`,
+            }).its('status').should('be.equal', 204)
+        })
     })
 
 })
